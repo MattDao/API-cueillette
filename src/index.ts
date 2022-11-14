@@ -4,21 +4,23 @@ import planteRouter from "./Routes/PlanteRoutes";
 import AppDataSource from "./Data-source";
 
 AppDataSource.initialize()
-  .then(() => {
+  .then(async () => {
     const app = express();
 
     app.use(express.json());
     app.use(
       cors({
         origin: "*", // 'http://localhost:3000'
-        methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+        methods: ["GET", "PUT", "POST", "DELETE"],
       })
     );
 
-    app.use("api/plantes", planteRouter);
+    app.use("/api/plantes", planteRouter);
 
-    app.listen(8080, () => {
-      console.log("Server running at http://localhost:8080");
+    app.listen(process.env.PORT, () => {
+      console.log(
+        `L'api est en route sur l'adresse localhost:${process.env.PORT}`
+      );
     });
   })
   .catch((err) => {
