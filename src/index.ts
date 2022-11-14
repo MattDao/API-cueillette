@@ -14,7 +14,7 @@ AppDataSource.initialize()
         methods: ["GET", "PUT", "POST", "DELETE"],
       })
     );
-
+    app.use(express.static("./public"));
     app.use("/api/plantes", planteRouter);
 
     app.listen(process.env.PORT, () => {
