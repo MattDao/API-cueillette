@@ -53,7 +53,7 @@ class PlanteController {
         status: "FAILED",
         data: {
           error:
-            "One of the following keys is missing or is empty in request body: 'name', 'power', 'life'",
+            "One of the following keys is missing or is empty in request body",
         },
       });
       return;
