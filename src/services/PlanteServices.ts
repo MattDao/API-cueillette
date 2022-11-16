@@ -14,7 +14,7 @@ class PlanteService {
    async createNewPlant(NewPlant: Plante): Promise<Plante> {
     console.log(NewPlant.name);
     return AppDataSource.query(
-      `INSERT INTO listplants (name, category, quantity, rating, unitprice, url_pic) VALUES ('${NewPlant.name}', ${NewPlant.category}, ${NewPlant.quantity}, ${NewPlant.rating}, ${NewPlant.unitprice}, ${NewPlant.url_pic})`
+      `INSERT INTO listplants (name, category, quantity, rating, unitprice, url_pic) VALUES ('${NewPlant.name}','${NewPlant.category}', ${NewPlant.quantity}, ${NewPlant.rating}, ${NewPlant.unitprice}, '${NewPlant.url_pic}')`
     );
   }
 
@@ -23,7 +23,7 @@ class PlanteService {
     console.log(id);
 
     return AppDataSource.query(
-      `UPDATE listplants SET name ='${changes.name}',category = ${changes.category}, quantity =${changes.quantity}, rating =${changes.rating}, url_pic =${changes.url_pic} WHERE id= ${id}`
+      `UPDATE listplants SET name = '${changes.name}',category = '${changes.category}', quantity =${changes.quantity}, rating =${changes.rating}, url_pic ='${changes.url_pic}' WHERE id= ${id}`
     );
   }
 
