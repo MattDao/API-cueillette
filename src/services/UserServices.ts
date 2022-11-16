@@ -9,13 +9,13 @@ class UserService {
     return AppDataSource.query("SELECT * FROM listusers;");
   }
   getOneUserById(id: number): Promise<User> {
-    return AppDataSource.query(`SELECT name FROM User where id =${id}`);
+    return AppDataSource.query(`SELECT email FROM listusers where id =${id}`);
   }
 
   createNewUser(NewUser: User): Promise<any> {
     console.log(NewUser.email);
     return AppDataSource.query(
-      `INSERT INTO user (email, password) VALUES ('${NewUser.email}', ${NewUser.password}})`
+      `INSERT INTO listusers (email, password) VALUES ('${NewUser.email}', ${NewUser.password}})`
     );
   }
 
@@ -24,13 +24,13 @@ class UserService {
     console.log(id);
 
     return AppDataSource.query(
-      `UPDATE user SET email ='${changes.email}',password = ${changes.password} WHERE id= ${id}`
+      `UPDATE listusers SET email ='${changes.email}',password = ${changes.password} WHERE id= ${id}`
     );
   }
 
   deleteOneUser(id: number): Promise<any> {
     console.log(id);
-    return AppDataSource.query(`DELETE FROM user WHERE id = ${id}`);
+    return AppDataSource.query(`DELETE FROM listusers WHERE id = ${id}`);
   }
 }
 
