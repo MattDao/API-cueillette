@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import planteRouter from "./Routes/PlanteRoutes";
 import AppDataSource from "./Data-source";
+import userRouter from "./Routes/UserRoutes";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -16,7 +17,7 @@ AppDataSource.initialize()
     );
     app.use(express.static("./public"));
     app.use("/api/plantes", planteRouter);
-
+    app.use("/api/users", userRouter);
     app.listen(process.env.PORT, () => {
       console.log(
         `L'api est en route sur l'adresse localhost:${process.env.PORT}`
