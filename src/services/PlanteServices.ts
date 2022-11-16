@@ -7,18 +7,18 @@ class PlanteService {
 
     return AppDataSource.query("SELECT * FROM listplants;");
   }
-  getOnePlantById(id: number): Promise<Plante> {
+   async getOnePlantById(id: number): Promise<Plante> {
     return AppDataSource.query(`SELECT name FROM listplants where id =${id}`);
   }
 
-  createNewPlant(NewPlant: Plante): Promise<any> {
+   async createNewPlant(NewPlant: Plante): Promise<Plante> {
     console.log(NewPlant.name);
     return AppDataSource.query(
       `INSERT INTO listplants (name, category, quantity, rating, unitprice, url_pic) VALUES ('${NewPlant.name}', ${NewPlant.category}, ${NewPlant.quantity}, ${NewPlant.rating}, ${NewPlant.unitprice}, ${NewPlant.url_pic})`
     );
   }
 
-  updateOnePlant(id: number, changes: Plante): Promise<any> {
+   async updateOnePlant(id: number, changes: Plante): Promise<Plante> {
     console.log(changes);
     console.log(id);
 
@@ -27,7 +27,7 @@ class PlanteService {
     );
   }
 
-  deleteOnePlant(id: number): Promise<any> {
+   async deleteOnePlant(id: number): Promise<Plante> {
     console.log(id);
     return AppDataSource.query(`DELETE FROM listplants WHERE id = ${id}`);
   }
