@@ -15,7 +15,7 @@ class UserService {
   createNewUser(NewUser: User): Promise<any> {
     console.log(NewUser.email);
     return AppDataSource.query(
-      `INSERT INTO listusers (email, password) VALUES ('${NewUser.email}', ${NewUser.password}})`
+      `INSERT INTO listusers (email, password) VALUES ('${NewUser.email}', ${NewUser.password})`
     );
   }
 

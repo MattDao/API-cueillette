@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import UserService from "../services/UserServices";
+import bcrypt from "bcrypt";
 
-//Création de classe
+
+
+
+
+
 
 class UserController {
   private userService = new UserService();
