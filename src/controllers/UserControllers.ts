@@ -3,11 +3,7 @@ import User from "../models/User";
 import UserService from "../services/UserServices";
 import bcrypt from "bcrypt";
 
-
-
-
-
-
+// hasher le password avant de l'envoyer dans la base de données
 
 class UserController {
   private userService = new UserService();
@@ -41,34 +37,44 @@ class UserController {
         .send({ status: "FAILED", data: { error: error?.message || error } });
     }
   }
-  async createNewUser(req: Request, res: Response): Promise<void> {
-    const NewUser: User = {
-      ...req.body,
-    };
-    console.log(NewUser);
-    if (!NewUser.email || NewUser.password === undefined) {
-      res.status(400).send({
-        status: "FAILED",
-        data: {
-          error:
-            "One of the following keys is missing or is empty in request body",
-        },
-      });
-      return;
-    }
+  async createNewUser(req: Request, res: Response) {
+    bcrypt
+      .hash(req.body.password, 10) //salt=10 combien de fois sera exécuté l'algoritme de hachage;
+      .then(async (hash) => {
+        console.log(hash);
+        // ce qui va etre enregistré
+        const newUser: User = {
+          email: req.body.email,
+          password: hash,
+        };
 
-    try {
-      await this.userService.createNewUser(NewUser);
-      res.status(201).send({
-        status: "OK",
-        message: `New user created`,
+        if (newUser.email === undefined || newUser.password === undefined) {
+          res.status(400).send({
+            status: "FAILED",
+            data: {
+              error:
+                "L'une des clés suivantes est manquante ou vide dans le req.body: 'email', 'password'",
+            },
+          });
+          return;
+        }
+
+        try {
+          await this.userService.createNewUser(newUser);
+          res.status(200).send({
+            status: "OK",
+            message: `Bienvenue !!!!`,
+            data: newUser,
+          });
+        } catch (error: any) {
+          res.send({ message: error?.message });
+        }
+      })
+      .catch((error: any) => {
+        res.status(500).json({ error });
       });
-    } catch (error: any) {
-      res
-        .status(error?.status || 500)
-        .send({ status: "FAILED", data: { error: error?.message || error } });
-    }
   }
+
   async updateOneUser(req: Request, res: Response): Promise<void> {
     const changes: User = {
       ...req.body,
@@ -128,3 +134,11 @@ class UserController {
   }
 }
 export default UserController;
+function then(
+  arg0: (hash: any) => Promise<void>,
+  async: any,
+  arg2: any,
+  arg3: boolean
+) {
+  throw new Error("Function not implemented.");
+}

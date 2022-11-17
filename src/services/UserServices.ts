@@ -1,7 +1,6 @@
 import User from "../models/User";
 import AppDataSource from "../Data-source";
 
-
 class UserService {
   async getAllUsers(): Promise<User[]> {
     console.log("UserService");
@@ -12,14 +11,14 @@ class UserService {
     return AppDataSource.query(`SELECT email FROM listusers where id =${id}`);
   }
 
-  createNewUser(NewUser: User): Promise<any> {
+  createNewUser(NewUser: User): Promise<User> {
     console.log(NewUser.email);
     return AppDataSource.query(
-      `INSERT INTO listusers (email, password) VALUES ('${NewUser.email}', ${NewUser.password})`
+      `INSERT INTO listusers (email, password) VALUES ('${NewUser.email}', '${NewUser.password}')`
     );
   }
 
-  updateOneUser(id: number, changes: User): Promise<any> {
+  updateOneUser(id: number, changes: User): Promise<User> {
     console.log(changes);
     console.log(id);
 
@@ -28,7 +27,7 @@ class UserService {
     );
   }
 
-  deleteOneUser(id: number): Promise<any> {
+  deleteOneUser(id: number): Promise<User> {
     console.log(id);
     return AppDataSource.query(`DELETE FROM listusers WHERE id = ${id}`);
   }
