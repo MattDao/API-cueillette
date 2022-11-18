@@ -7,18 +7,18 @@ class UserService {
 
     return AppDataSource.query("SELECT * FROM listusers;");
   }
-  getOneUserById(id: number): Promise<User> {
+  async getOneUserById(id: number): Promise<User> {
     return AppDataSource.query(`SELECT email FROM listusers where id =${id}`);
   }
 
-  createNewUser(NewUser: User): Promise<User> {
+  async signInNewUser(NewUser: User): Promise<User> {
     console.log(NewUser.email);
     return AppDataSource.query(
       `INSERT INTO listusers (email, password) VALUES ('${NewUser.email}', '${NewUser.password}')`
     );
   }
 
-  updateOneUser(id: number, changes: User): Promise<User> {
+  async updateOneUser(id: number, changes: User): Promise<User> {
     console.log(changes);
     console.log(id);
 
@@ -27,9 +27,15 @@ class UserService {
     );
   }
 
-  deleteOneUser(id: number): Promise<User> {
+  async deleteOneUser(id: number): Promise<User> {
     console.log(id);
     return AppDataSource.query(`DELETE FROM listusers WHERE id = ${id}`);
+  }
+
+  async loginOneUser(user: User): Promise<User[]> {
+    return AppDataSource.query(
+      `SELECT password from listusers WHERE email = '${user.email}';`
+    );
   }
 }
 

@@ -37,12 +37,12 @@ class UserController {
         .send({ status: "FAILED", data: { error: error?.message || error } });
     }
   }
-  async createNewUser(req: Request, res: Response) {
+  async signInNewUser(req: Request, res: Response) {
     bcrypt
       .hash(req.body.password, 10) //salt=10 combien de fois sera exécuté l'algoritme de hachage;
       .then(async (hash) => {
         console.log(hash);
-        // ce qui va etre enregistré
+
         const newUser: User = {
           email: req.body.email,
           password: hash,
@@ -60,7 +60,7 @@ class UserController {
         }
 
         try {
-          await this.userService.createNewUser(newUser);
+          await this.userService.signInNewUser(newUser);
           res.status(200).send({
             status: "OK",
             message: `Bienvenue !!!!`,
@@ -132,13 +132,33 @@ class UserController {
         .send({ status: "FAILED", data: { error: error?.message || error } });
     }
   }
+  async loginOneUser(req: Request, res: Response) {
+    const user = await this.userService.loginOneUser(req.body);
+    console.log("user récupéré : ", user);
+    const passwordUser = user[0].password;
+    console.log("password : ", passwordUser);
+    const passwordMatch = await bcrypt.compare(req.body.password, passwordUser);
+    console.log("password : ", passwordMatch);
+    res.send();
+
+    if (user[0].email === undefined || user[0].password === undefined) {
+      res.status(400).send({
+        status: "FAILED",
+        data: {
+          error: "Saisie manquante",
+        },
+      });
+      return;
+    } else if (!passwordMatch) {
+      res.status(400).send({
+        status: "FAILED",
+        data: {
+          error: "Mot de passe incorrecte",
+        },
+      });
+      return;
+    }
+  }
 }
+
 export default UserController;
-function then(
-  arg0: (hash: any) => Promise<void>,
-  async: any,
-  arg2: any,
-  arg3: boolean
-) {
-  throw new Error("Function not implemented.");
-}
