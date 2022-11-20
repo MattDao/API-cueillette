@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import UserService from "../services/UserServices";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 // hasher le password avant de l'envoyer dans la base de données
 
@@ -71,7 +72,7 @@ class UserController {
         }
       })
       .catch((error: any) => {
-        res.status(500).json({ error });
+        res.status(500).send({ error });
       });
   }
 
@@ -141,22 +142,36 @@ class UserController {
     console.log("password : ", passwordMatch);
     res.send();
 
-    if (user[0].email === undefined || user[0].password === undefined) {
+    if (req.body.email === undefined || req.body.password === undefined) {
       res.status(400).send({
         status: "FAILED",
         data: {
           error: "Saisie manquante",
         },
       });
-      return;
     } else if (!passwordMatch) {
       res.status(400).send({
         status: "FAILED",
         data: {
-          error: "Mot de passe incorrecte",
+          error: "Mot de passe erroné",
         },
       });
       return;
+    }
+
+    try {
+      const privateKey = "Access secret token";
+      let token = jwt.sign({ user: this.loginOneUser }, privateKey, {
+        expiresIn: 60 * 60,
+      });
+      //  const authtoken = jwt.verify(token)
+      res.status(200).send({
+        token,
+        status: "OK",
+        message: `connecté`,
+      });
+    } catch (error: any) {
+      res.send({ message: error?.message });
     }
   }
 }

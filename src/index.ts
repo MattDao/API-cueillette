@@ -3,6 +3,7 @@ import cors from "cors";
 import planteRouter from "./Routes/PlanteRoutes";
 import AppDataSource from "./Data-source";
 import userRouter from "./Routes/UserRoutes";
+import { appendFile } from "fs";
 
 AppDataSource.initialize()
   .then(async () => {
@@ -27,3 +28,5 @@ AppDataSource.initialize()
   .catch((err) => {
     console.log("Une erreur s'est produite : ", err);
   });
+
+  

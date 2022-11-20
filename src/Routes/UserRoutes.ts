@@ -9,7 +9,6 @@ userRouter.get("/:id", (req, res) => userController.getOneUserById(req, res));
 userRouter.post("/signin", (req, res) => userController.signInNewUser(req, res));
 userRouter.put("/:id", (req, res) => userController.updateOneUser(req, res));
 userRouter.delete("/:id", (req, res) => userController.deleteOneUser(req, res));
-
 userRouter.post("/login", (req, res) => userController.loginOneUser(req, res));
 
 
