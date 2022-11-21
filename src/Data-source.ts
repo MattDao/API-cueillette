@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });
+
 const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.DB_HOST,
@@ -11,6 +12,7 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
+ 
   subscribers: [],
   migrations: [],
 });
