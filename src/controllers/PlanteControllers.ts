@@ -42,7 +42,8 @@ class PlanteController {
     };
     console.log(NewPlant);
     if (
-      !NewPlant.name ||
+      !NewPlant.id ||
+      NewPlant.name ||
       NewPlant.unitprice === undefined ||
       NewPlant.quantity === undefined ||
       NewPlant.rating === undefined ||
@@ -82,6 +83,7 @@ class PlanteController {
       });
       return;
     } else if (
+      !changes.id ||
       !changes.name ||
       !changes.unitprice ||
       !changes.quantity ||

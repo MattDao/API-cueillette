@@ -19,18 +19,17 @@ class UserController {
       res.status(500).send({ status: "failed", message: error });
     }
   }
-  async getOneUserById(req: Request, res: Response): Promise<void> {
-    const paramId = req.params.id;
-    if (!paramId) {
+  async getOneUserByEmail(req: Request, res: Response): Promise<void> {
+    const paramEmail = req.params.email;
+    if (!paramEmail) {
       res.status(400).send({
         status: "FAILED",
-        data: { error: "Parameter 'id' can not be empty" },
+        data: { error: "Parameter 'email' can not be empty" },
       });
       return;
     }
     try {
-      const id = parseInt(paramId);
-      const oneUser = await this.userService.getOneUserById(id);
+      const oneUser = await this.userService.getOneUserByEmail(paramEmail);
       res.send({ status: "OK", data: oneUser });
     } catch (error: any) {
       res
@@ -134,45 +133,79 @@ class UserController {
     }
   }
   async loginOneUser(req: Request, res: Response) {
-    const user = await this.userService.loginOneUser(req.body);
-    console.log("user récupéré : ", user);
-    const passwordUser = user[0].password;
-    console.log("password : ", passwordUser);
-    const passwordMatch = await bcrypt.compare(req.body.password, passwordUser);
-    console.log("password : ", passwordMatch);
-    res.send();
+    console.log("Usercontroller - connexion - body : ", req.body);
+    const connectingUser: User = {
+      email: req.body.email,
+      password: req.body.password,
+    };
 
-    if (req.body.email === undefined || req.body.password === undefined) {
-      res.status(400).send({
-        status: "FAILED",
-        data: {
-          error: "Saisie manquante",
-        },
-      });
-    } else if (!passwordMatch) {
-      res.status(400).send({
-        status: "FAILED",
-        data: {
-          error: "Mot de passe erroné",
-        },
-      });
+    if (
+      connectingUser.email === undefined ||
+      connectingUser.password === undefined
+    ) {
+      res
+        .status(400)
+        .send({ message: "Il manque une info (email ou password)" });
       return;
     }
 
-    try {
-      const privateKey = "Access secret token";
-      let token = jwt.sign({ user: this.loginOneUser }, privateKey, {
-        expiresIn: 60 * 60,
-      });
-      //  const authtoken = jwt.verify(token)
-      res.status(200).send({
-        token,
-        status: "OK",
-        message: `connecté`,
-      });
-    } catch (error: any) {
-      res.send({ message: error?.message });
+    // 1 - chercher l'utilisateur dont l'email est présent dans le body
+    const foundUser = await this.userService.loginOneUser(
+      connectingUser
+    );
+    console.log("foundUser", foundUser);
+    if (foundUser.length === 0) {
+      console.log("Email non trouvé dans la BDD");
+      res
+        .status(401)
+        .send({ message: "Le couple email/password ne correspondent pas" });
+      return;
     }
+
+    // 2 - comparer le mot de passe en clair (BODY) avec celui hashé (BDD)
+    bcrypt.compare(
+      connectingUser.password,
+      foundUser[0].password,
+      (err, result) => {
+        console.log("err", err);
+        console.log("result", result);
+        if (result) {
+          console.log("Connexion réussie");
+          // 3 - si les mdp concordent générer un token
+          let secretKey: string;
+
+          if (process.env.SECRET_KEY_TOKEN) {
+            secretKey = process.env.SECRET_KEY_TOKEN;
+
+            jwt.sign(
+              { sub: foundUser[0].id },
+              secretKey,
+              { expiresIn: "4h" },
+              (err: any, token: string | undefined) => {
+                console.log("erro", err);
+                console.log("Token ", token);
+                console.log("Type Token", typeof token);
+                // 4 - renvoyer ce token
+                res.status(200).send({
+                  token: token,
+                  message:
+                    "Félicitations voici votre token d'authentification !!!",
+                });
+              }
+            );
+          } else {
+            res
+              .status(500)
+              .send({ message: "Merci de contacter votre administrateur" });
+          }
+        } else {
+          res
+            .status(401)
+            .send({ message: "Le couple email/password ne correspondent pas" });
+          return;
+        }
+      }
+    );
   }
 }
 

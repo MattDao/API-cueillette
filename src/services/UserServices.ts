@@ -7,8 +7,10 @@ class UserService {
 
     return AppDataSource.query("SELECT * FROM listusers;");
   }
-  async getOneUserById(id: number): Promise<User> {
-    return AppDataSource.query(`SELECT email FROM listusers where id =${id}`);
+  async getOneUserByEmail(email: string): Promise<User[]> {
+    return AppDataSource.query(
+      `SELECT email FROM listusers where email =${email}`
+    );
   }
 
   async signInNewUser(NewUser: User): Promise<User> {
@@ -34,7 +36,7 @@ class UserService {
 
   async loginOneUser(user: User): Promise<User[]> {
     return AppDataSource.query(
-      `SELECT password from listusers WHERE email = '${user.email}';`
+      `SELECT * from listusers WHERE listusers.email = '${user.email}'`
     );
   }
 }
