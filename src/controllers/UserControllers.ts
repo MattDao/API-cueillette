@@ -150,9 +150,7 @@ class UserController {
     }
 
     // 1 - chercher l'utilisateur dont l'email est présent dans le body
-    const foundUser = await this.userService.loginOneUser(
-      connectingUser
-    );
+    const foundUser = await this.userService.loginOneUser(connectingUser);
     console.log("foundUser", foundUser);
     if (foundUser.length === 0) {
       console.log("Email non trouvé dans la BDD");

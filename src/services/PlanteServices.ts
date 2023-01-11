@@ -8,7 +8,7 @@ class PlanteService {
     return AppDataSource.query("SELECT * FROM listplants;");
   }
    async getOnePlantById(id: number): Promise<Plante> {
-    return AppDataSource.query(`SELECT name FROM listplants where id =${id}`);
+    return AppDataSource.query(`SELECT * FROM listplants where id =${id}`);
   }
 
    async createNewPlant(NewPlant: Plante): Promise<Plante> {
